@@ -80,10 +80,19 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	// Get user HTML input
-	fmt.Println("Enter an HTML:")
-	scanner.Scan()
-	userHtml := scanner.Text()
-	htmlList := []string{userHtml}
+	fmt.Println("How many URLs do you wish to enter:")
+	var userUrlQuantity int
+	fmt.Scanln(&userUrlQuantity)
+
+	htmlList := []string{}
+
+	for i := 0; i < userUrlQuantity; i++ {
+		fmt.Println("Enter an HTML:")
+		scanner.Scan()
+		userHtml := scanner.Text()
+		htmlList = append(htmlList, userHtml)
+
+	}
 
 	// Buffered Channel that will record the ScrapeResult
 	results := make(chan ScrapeResult, len(htmlList))
