@@ -1,5 +1,9 @@
 package main
 
+import (
+	"golang.org/x/net/html"
+)
+
 // todo: Create struct for ScrapeResult with URL Title and Error
 type ScrapeResult struct {
 	URL   string
@@ -15,13 +19,31 @@ type ScrapeResult struct {
 
 // todo: Create helper function to recursively traverse the HTML doc and find the title tag.
 // This will take in var of type *html.Node and return a string
-// for c := n.FirstChild; c != nil; c = c.NextSibling {
-// 	// Recursively call extractTitle on child nodes
-// 	if title := extractTitle(c); title != "" {
-// 		return title
-// 	}
-// }
+//
+//	for c := n.FirstChild; c != nil; c = c.NextSibling {
+//		// Recursively call extractTitle on child nodes
+//		if title := extractTitle(c); title != "" {
+//			return title
+//		}
+//	}
+//
 // return ""
+func extractTitle(n *html.Node) string {
+	if n.Type == html.ElementNode && n.Data == "title" {
+		if n.FirstChild != nil {
+			return n.FirstChild.Data
+		}
+		return ""
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		// Recursively call extractTitle on all child nodes
+		if title := extractTitle(c); title != "" {
+			return title
+		}
+	}
+	return ""
+}
 
 // todo: Main function
 // Get URL or list of URLS
