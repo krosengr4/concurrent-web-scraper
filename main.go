@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+
 	"golang.org/x/net/html"
 )
 
@@ -16,6 +20,38 @@ type ScrapeResult struct {
 // 2: Parse the HTML body (html.Parse)
 // 3: Extract the title (extractTitle func)
 // 4: Send the successful result back
+func ScrapeWorker(url string, results chan<- ScrapeResult) {
+	log.Printf("Starting worker for: %s", url)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		// Send error back and exit
+		results <- ScrapeResult{URL: url, Error: fmt.Errorf("HTTP GET request failed: %w", err)}
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		results <- ScrapeResult{URL: url, Error: fmt.Errorf("HTTP response status not 200: %d", resp.StatusCode)}
+		return
+	}
+
+	doc, err := html.Parse(resp.Body)
+	if err != nil {
+		results <- ScrapeResult{URL: url, Error: fmt.Errorf("HTML parsing failed: %w", err)}
+		return
+	}
+
+	title := extractTitle(doc)
+
+	results <- ScrapeResult{
+		URL:   url,
+		Title: title,
+		Error: nil,
+	}
+	log.Printf("Finished worker for: %s", url)
+
+}
 
 // todo: Create helper function to recursively traverse the HTML doc and find the title tag.
 // This will take in var of type *html.Node and return a string
