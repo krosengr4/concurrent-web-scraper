@@ -1,6 +1,11 @@
 package main
 
 // todo: Create struct for ScrapeResult with URL Title and Error
+type ScrapeResult struct {
+	URL   string
+	Title string
+	Error error
+}
 
 // todo: Create function for ScrapeWorker that takes in url(string) and results(writes to channel)
 // 1: Fetch the URL content (http.Get)
@@ -22,4 +27,4 @@ package main
 // Get URL or list of URLS
 // Create buffered channel to hold the results, size = to number of URLS
 // For each URL, launch a worker goroutine
-//
+// Collect all the results from the channels
