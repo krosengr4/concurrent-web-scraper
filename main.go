@@ -87,7 +87,7 @@ func main() {
 	htmlList := []string{}
 
 	for i := 0; i < userUrlQuantity; i++ {
-		fmt.Println("Enter an HTML:")
+		fmt.Println("Enter an URL:")
 		scanner.Scan()
 		userHtml := scanner.Text()
 		htmlList = append(htmlList, userHtml)
